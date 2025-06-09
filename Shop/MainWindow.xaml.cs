@@ -1,4 +1,6 @@
-﻿using Shop.Product.Dto;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Shop.Main.ViewModel;
+using Shop.Product.Dto;
 using Shop.Product.View;
 using Shop.Services;
 using System.Text;
@@ -24,6 +26,9 @@ namespace Shop
         public MainWindow()
         {
             InitializeComponent();
+            var vm = App.ServiceProvider.GetRequiredService<MainWindowViewModel>();
+            DataContext = vm;
+            _api = App.ServiceProvider.GetRequiredService<ProductApiService>();
             Loaded += MainWindow_Loaded;
         }
 

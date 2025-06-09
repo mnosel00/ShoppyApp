@@ -1,7 +1,11 @@
-﻿using Shop.Services;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Shop.Main.Common;
+using Shop.Product.ViewModel;
+using Shop.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -20,19 +24,33 @@ namespace Shop.Product.View
     /// </summary>
     public partial class ProductDetailsWindow : Window
     {
-        private readonly ProductApiService _api = new();
-
         public ProductDetailsWindow(Guid productId)
         {
             InitializeComponent();
+
+            // Pobierz serwisy przez DI
+            var basketApiService = App.ServiceProvider.GetRequiredService<BasketApiService>();
+            var productApiService = App.ServiceProvider.GetRequiredService<ProductApiService>();
+            var userId = BasketState.Instance.UserId != Guid.Empty ? BasketState.Instance.UserId : Guid.NewGuid();
+            BasketState.Instance.UserId = userId;
+
+            var vm = new ProductDetailsViewModel(
+                userId,
+                productId,
+                basketApiService,
+                productApiService
+            );
+            DataContext = vm;
+
             Loaded += async (s, e) =>
             {
-                var product = await _api.GetProductAsync(productId);
-                if (product != null)
-                {
-                    NameText.Text = product.Name;
-                    PriceText.Text = $"Price: {product.Price:C}";
-                }
+                await vm.LoadProductAsync();
+            };
+
+            vm.ProductAddedToBasket += () =>
+            {
+                MessageBox.Show("Produkt dodany do koszyka!");
+                Close();
             };
         }
     }
