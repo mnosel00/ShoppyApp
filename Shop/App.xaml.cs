@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Shop.Main.ViewModel;
+using Shop.Product.Cache;
 using Shop.Services;
 using System.Configuration;
 using System.Data;
@@ -21,6 +22,7 @@ namespace Shop
 
             // Rejestracja serwisów
             services.AddSingleton(new HttpClient { BaseAddress = new Uri("https://localhost:7012") });
+            services.AddSingleton<ProductCacheService>();
             services.AddSingleton<ProductApiService>();
             services.AddSingleton<BasketApiService>();
 
