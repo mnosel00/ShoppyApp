@@ -50,10 +50,9 @@ namespace Shop.Main.ViewModel
         {
             try
             {
-                var userId = BasketState.Instance.UserId != Guid.Empty ? BasketState.Instance.UserId : Guid.NewGuid();
-                BasketState.Instance.UserId = userId;
-                var basketId = await _basketApiService.CreateBasketAsync(userId);
+                var (basketId, userId) = await _basketApiService.CreateBasketAsync();
                 BasketState.Instance.BasketId = basketId;
+                BasketState.Instance.UserId = userId;
                 InfoMessage = "Koszyk został utworzony!";
             }
             catch

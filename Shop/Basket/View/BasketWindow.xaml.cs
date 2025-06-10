@@ -24,5 +24,9 @@ namespace Shop.Basket.View
             InitializeComponent();
             DataContext = viewModel;
         }
+        private void Close_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

@@ -55,8 +55,9 @@ namespace Shop.Product.ViewModel
         {
             if (_basketState.BasketId == null || _basketState.BasketId == Guid.Empty)
             {
-                var basketId = await _basketApiService.CreateBasketAsync(_userId);
+                var (basketId, userId) = await _basketApiService.CreateBasketAsync();
                 _basketState.BasketId = basketId;
+                _basketState.UserId = userId;
             }
             await _basketApiService.AddProductToBasketAsync(_basketState.BasketId.Value, _productId);
             ProductAddedToBasket?.Invoke();

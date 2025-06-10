@@ -18,12 +18,12 @@ namespace Shop.Services
             _httpClient = httpClient;
         }
 
-        public async Task<Guid> CreateBasketAsync(Guid userId)
+        public async Task<(Guid basketId, Guid userId)> CreateBasketAsync()
         {
             var response = await _httpClient.PostAsync("/api/basket", null);
             response.EnsureSuccessStatusCode();
             var result = await response.Content.ReadFromJsonAsync<CreateBasketResponse>();
-            return result.BasketId;
+            return (result.BasketId, result.UserId);
         }
 
         public async Task<BasketDto?> GetBasketAsync(Guid userId)
@@ -37,14 +37,27 @@ namespace Shop.Services
 
         public async Task AddProductToBasketAsync(Guid basketId, Guid productId)
         {
-            var request = new { ProductId = productId };
-            var response = await _httpClient.PostAsJsonAsync($"/api/basket/{basketId}/items", request);
-            response.EnsureSuccessStatusCode();
+            try
+            {
+                var request = new { ProductId = productId };
+                var response = await _httpClient.PostAsJsonAsync($"/api/basket/{basketId}/items", request);
+                response.EnsureSuccessStatusCode();
+            }
+            catch (Exception)
+            {
+                System.Windows.MessageBox.Show(
+                    "Produkt znajduje się w innym koszyku lub jest zablokowany",
+                    "Błąd dodawania produktu",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Warning
+                );
+            }
         }
 
         private class CreateBasketResponse
         {
             public Guid BasketId { get; set; }
+            public Guid UserId { get; set; }
         }
 
     }

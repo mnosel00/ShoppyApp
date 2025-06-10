@@ -15,7 +15,7 @@ namespace Shop.Basket.ViewModel
 
         public BasketViewModel(BasketDto basket)
         {
-            Items = new ObservableCollection<BasketItemDto>(basket.basketItem);
+            Items = new ObservableCollection<BasketItemDto>(basket.Items);
             TotalValue = basket.TotalValue;
         }
     }
