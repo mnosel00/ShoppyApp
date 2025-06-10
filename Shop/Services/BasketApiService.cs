@@ -53,6 +53,11 @@ namespace Shop.Services
                 );
             }
         }
+        public async Task RemoveProductFromBasketAsync(Guid basketId, Guid productId)
+        {
+            var response = await _httpClient.DeleteAsync($"/api/basket/{basketId}/items/{productId}");
+            response.EnsureSuccessStatusCode();
+        }
 
         private class CreateBasketResponse
         {
